@@ -2,7 +2,14 @@ import { Router } from 'express'
 import bcrypt from 'bcrypt'
 import db from '../database.ts'
 import { requireAuth } from '../middleware.ts'
+import { rateLimit } from "express-rate-limit"
 
+
+const limiter = rateLimit({
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    limit: 5,
+    standardHeaders: true,
+})
 
 const router = Router()
 
@@ -44,16 +51,12 @@ router.post("/register", async (req, res) => {
 
 
 
-router.post("/login", async (req, res) => {
+router.post("/login", limiter, async (req, res) => {
     const { email, password } = req.body
 
     if (!email || !password) {
         return res.status(400).json({ error: "Missing email or password" })
     }
-
-
-
-
 
     const user = db
         .prepare(`

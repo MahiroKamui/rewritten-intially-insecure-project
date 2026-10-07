@@ -3,6 +3,7 @@ import session from 'express-session'
 import cors from 'cors'
 import users from './routes/users.ts'
 import auth from './routes/auth.ts'
+import { rateLimit } from 'express-rate-limit'
 
 
 
@@ -24,6 +25,15 @@ app.use(cors({
     origin: "http://localhost:3002",
     credentials: true,
 }))
+
+
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    limit: 3,
+    standardHeaders: true,
+})
+
+app.use(limiter)
 
 app.get('/', (req, res) => {
     res.send("Cybersecurity API")
