@@ -42,7 +42,7 @@ router.post("/register", async (req, res) => {
     res.status(201).json(result)
 })
 
-const requests = new Map
+
 
 router.post("/login", async (req, res) => {
     const { email, password } = req.body
@@ -51,37 +51,9 @@ router.post("/login", async (req, res) => {
         return res.status(400).json({ error: "Missing email or password" })
     }
 
-    // Rate limit
-    const identifier = req.ip
-    const maxRequests = 5
-    const window = 600_000 // 10 min
-    const now = Date.now()
-    const userRequests = requests.get(identifier)
 
-    console.log(`Login attempt from ${identifier}`)
 
-    // No data OR outside window
-    if (!userRequests || now >= userRequests.resetAt) {
-        requests.set(identifier, {
-            count: 1,
-            resetAt: now + window
-        })
 
-        console.log(`New window for ${identifier} - count: 1`)
-    } else {
-        // If maxRequests is true
-        if (userRequests.count >= maxRequests) {
-            console.log(`BLOCKED ${identifier}`)
-
-            return res.status(429).json({
-                error: "Too many login attempts"
-            })
-        }
-
-        // Still in same window
-        userRequests.count++
-        console.log(`${identifier}: ${userRequests.count}/${maxRequests} attempts`)
-    }
 
     const user = db
         .prepare(`

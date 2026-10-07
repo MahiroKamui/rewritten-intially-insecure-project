@@ -14,7 +14,7 @@ app.use(express.json())
 
 app.use(
     session({
-        secret: "4rniernufgi9494457@@£€sskkw2£",
+        secret: "4rniernufgi9494457@@£€skew2£",
         resave: false,
         saveUninitialized: false,
     }),
@@ -29,8 +29,8 @@ app.get('/', (req, res) => {
     res.send("Cybersecurity API")
 })
 
-app.use('/users')
-app.use('/auth')
+app.use('/users', users)
+app.use('/auth', auth)
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
